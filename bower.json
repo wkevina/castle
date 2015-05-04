@@ -1,0 +1,21 @@
+{
+  "name": "castle",
+  "version": "0.0.0",
+  "authors": [
+    "Kevin Ward <antiomiae@gmail.com>"
+  ],
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "threejs": "*"
+  }
+}
