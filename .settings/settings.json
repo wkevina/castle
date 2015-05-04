@@ -1,3 +1,6 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+	"javascript.validate.target": "ES6",
+	"editor.fontFamily": "Inconsolata-dz",
+	"editor.fontSize": 14
 }
