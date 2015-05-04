@@ -2,5 +2,8 @@
 {
 	"javascript.validate.target": "ES6",
 	"editor.fontFamily": "Inconsolata-dz",
-	"editor.fontSize": 14
+	"editor.fontSize": 14,
+	"editor.tabSize": "4",
+	"editor.insertSpaces": false,
+	"editor.formatOnType": true
 }

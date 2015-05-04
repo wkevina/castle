@@ -21,15 +21,17 @@
   <p>The project was successfully built. Note that the template does not
   include any UI frameworks or libraries, it's all about a Traceur, ES6 modules
   toolset</p>
-  <p>The current time is <span id='timeSpan' />.</p>
+  <p>The current time is <span id="timeSpan">Hey, this is not a time</span>.</p>
   <script src="static/lib/traceur-runtime.js"></script>
   <script src="static/lib/es6-module-loader.js"></script>
   <script src="static/lib/system.js"></script>
   <script>
-    System.import('main');
+    //window.onload = function() {
+      System.import('main');
+    //}
   </script>
   
 <!-- bower:js -->
-<script src="../bower_components/threejs/build/three.js"></script>
+<script src="lib/threejs/build/three.js"></script>
 <!-- endbower --> 
 </body>

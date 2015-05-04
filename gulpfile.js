@@ -13,11 +13,13 @@ var wiredep = require('wiredep').stream;
 var dir = {
   index      : './app/index.html',
   sourceDir  : './app',
-  source     : ['!./app/lib', './app/**/*.js'],
+  source     : ['./app/**/*.js', '!./app/{lib,lib/**}'],
   main       : './app/main.js',
-  lib        : ['./app/lib/**/*.*',
-                './node_modules/systemjs/dist/system.js*',
-                './node_modules/es6-module-loader/dist/es6-module-loader.js*'],
+  lib        : ['!app/lib/threejs/examples/**',
+                '!*.json',
+                './app/lib/**/*.*',
+                './node_modules/systemjs/dist/system.*',
+                './node_modules/es6-module-loader/dist/es6-module-loader.*'],
   libOut     : './build/static/lib',
   build      : './build',
   targetAppJs: 'app.js',
@@ -54,13 +56,13 @@ gulp.task('compileApp', function() {
     memberVariables       : true,
     symbols               : true,
     types                 : true,
-    modules               : 'instantiate' //'instantiate'
+    modules               : 'instantiate'
   };
 
-  return gulp.src(dir.source)
-    .pipe(sourceMaps.init({debug:true}))
+  return gulp.src(dir.source, {base:dir.sourceDir})
+    .pipe(sourceMaps.init())
     .pipe(traceur(traceurOptions))
-    .pipe(sourceMaps.write('./static/maps'))
+    .pipe(sourceMaps.write('.'))
     .pipe(gulp.dest(dir.build));
 });
 
@@ -76,7 +78,7 @@ gulp.task('connect', function() {
 })
 
 gulp.task('build-dev', function() {
-  runSeq('clean-build', ['bower', 'traceur-runtimes', 'copy-static', 'compileApp'])
+  runSeq('clean-build', ['traceur-runtimes', 'copy-static', 'compileApp'], 'bower')
 })
 
 gulp.task('default', function() {
@@ -84,7 +86,17 @@ gulp.task('default', function() {
 });
 
 gulp.task('bower', function () {
-  gulp.src('./app/index.html')
-    .pipe(wiredep())
-    .pipe(gulp.dest(dir.sourceDir));
+  gulp.src(dir.build + '/index.html')
+    .pipe(wiredep({
+      cwd: '.',
+      ignorePath: /\.\.\/app\//,
+      fileTypes: {
+        html: {
+          replace: {
+            js: '<script src="static/{{filePath}}"></script>'
+          }
+        }
+      }
+    }))
+    .pipe(gulp.dest(dir.build));
 });
