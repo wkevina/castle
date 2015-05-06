@@ -1,12 +1,32 @@
-import {Person, printStartMessage} from './externalModule';
+import THREE from 'static/lib/threejs/build/three';
 
-printStartMessage();
+// Set up the THREE context
 
-var developer = new Person();
-developer.sayHi();
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-var timeSpan = document.getElementById("timeSpan");
-console.log("innerHTML = " + timeSpan.innerHTML);
-timeSpan.innerHTML = '' + new Date();
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild(renderer.domElement);
 
-console.log("innerHTML = " + timeSpan.innerHTML);
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+var cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+var textGeometry = new THREE.TextGeometry("_castle_", { size: window.innerHeight / 5 });
+//var text = new THREE.Mesh(textGeometry, material);
+//scene.add(text);
+
+camera.position.z = 5;
+
+function render() {
+	requestAnimationFrame(render);
+	
+	cube.rotation.x += 0.1;
+	cube.rotation.y += 0.1;
+	
+	renderer.render( scene, camera );
+}
+render();
