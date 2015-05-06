@@ -1,7 +1,11 @@
 {
   "name": "castle",
   "version": "0.0.1",
-  "description": "A Traceur ES6 Project",
+  "description": "An es6 and webGL experiment",
+  "repository": {
+    "type": "git",
+    "url": "wkevina/castle"
+  },
   "devDependencies": {
     "del": "^1.1.1",
     "gulp": "^3.8.11",
