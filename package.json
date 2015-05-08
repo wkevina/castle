@@ -20,6 +20,7 @@
     "traceur": "0.0.88"
   },
   "dependencies": {
+    "es6-micro-loader": "^0.2.1",
     "es6-module-loader": "^0.16.6",
     "systemjs": "^0.16.11",
     "wiredep": "^2.2.2"

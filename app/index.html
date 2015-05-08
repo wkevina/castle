@@ -1,24 +1,30 @@
 <!doctype>
 <html>
-	<head>
+
+<head>
 		<meta charset="UTF-8" />
 		<title>castle</title>
-	</head>
-	<style>
+</head>
+<style>
 		body {
 				padding: 0px;
 				margin: 0px;
-			}
-	</style>
-	<!-- bower:css -->
-	<!-- endbower -->
-	<body>
-		<script src="static/lib/traceur-runtime.js"></script>
+		}
+</style>
+<!-- bower:css -->
+<!-- endbower -->
+
+<body>
+		<!--<script src="static/lib/babel-runtime.js"></script>
 		<script src="static/lib/es6-module-loader.js"></script>
-		<script src="static/lib/system.js"></script>
-		<script>
-			System.import('main');
-		</script>
+		<script src="static/lib/system.js"></script>-->
+		<script src="static/lib/system-polyfill.js"></script>
+
 		<!-- bower:js -->
 		<!-- endbower -->
-	</body>
+
+		<script src="all.js" type="text/javascript"></script>
+		<script>
+				System.import('all');
+		</script>
+</body>

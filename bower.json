@@ -16,6 +16,8 @@
     "tests"
   ],
   "dependencies": {
-    "threejs": "*"
+    "threejs": "*",
+    "babel-polyfill": "~0.0.1",
+    "helvetiker_regular.typeface": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.js"
   }
 }
