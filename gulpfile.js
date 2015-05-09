@@ -1,6 +1,7 @@
 /*global require: true */
 
 var gulp = require('gulp');
+var plumber = require('gulp-plumber');
 var babel = require('gulp-babel');
 var sourceMaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
@@ -43,13 +44,15 @@ gulp.task('copy-static', staticCopyTasks);
 
 gulp.task('compileApp', function() {
 	var babelOptions = {
-		modules: 'system'
+		modules: 'system',
+		moduleIds: true
 	};
 
 
 	return gulp.src(dir.source, {
 			base: dir.sourceDir
 		})
+		.pipe(plumber())
 		.pipe(sourceMaps.init())
 		.pipe(concat('all.js'))
 		.pipe(babel(babelOptions))
@@ -64,7 +67,8 @@ gulp.task('watch', function() {
 gulp.task('connect', function() {
 	connect.server({
 		root: 'build',
-		livereload: false
+		livereload: false,
+		host: '0.0.0.0'
 	});
 });
 
