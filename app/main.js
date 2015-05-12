@@ -246,6 +246,7 @@ export function main() {
 					obj.dispatchEvent(new CustomEvent(name, {detail:event}));
 					running = false;
 				});
+				//event.preventDefault();
 			};
 			obj.addEventListener(type, func);
 		};
@@ -259,7 +260,7 @@ export function main() {
 
 		var wheel = event.detail;
 
-		if (!wheel.metaKey) { // PAN
+		if (!wheel.shiftKey) { // PAN
 
 			var deltaX = wheel.deltaX;
 			var deltaY = wheel.deltaY;
