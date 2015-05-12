@@ -74,18 +74,13 @@
 			void main()
 			{
 				vec2 uv = (view*vec4(gl_FragCoord.xy, 0.0, 1.0)).xy;
-				//float aspect = uv.y/uv.x; // h/w
 
 				vec2 z = uv;
 
-				// if (z.x*z.x + z.y*z.y >= 4.0) {
-				// 	gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-				// 	return;
-				// }
 
 				int count = 0;
 
-				for (int iter = 0; iter < 50; iter++) {
+				for (int iter = 0; iter < 200; iter++) {
 
 					if (z.x*z.x + z.y*z.y >= 4.0) {
 						break;
@@ -98,21 +93,23 @@
 				float mag = z.x*z.x + z.y*z.y;
 
 				if (mag <= 2.0) {
-					//gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-					gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+					//gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+					gl_FragColor = vec4(0.0,0.0,0.0,1.0);
 				} else {
-					float ratio = float(count)/50.0;
-					gl_FragColor = vec4(hsv2rgb(vec3(0.5 - ratio*0.3, 1.0, ratio + 0.7)), 1.0);
+					float ratio = float(count)/25.0;
+					//gl_FragColor = vec4(hsv2rgb(vec3(0.5 - ratio*0.3, 1.0, ratio + 0.7)), 1.0);
+					if (ratio < 0.5) {
+						gl_FragColor = vec4(ratio*2.0, 0.0,0.0, 1.0);
+					}
+					else if (ratio < 2.0) {
+						gl_FragColor = vec4(1.0, 0.0, (ratio - 0.5)*0.666, 1.0);
+					} else if (ratio < 6.0) {
+						gl_FragColor = vec4(0.0, (ratio-2.0)*0.25, 1.0, 1.0);
+					} else {
+						gl_FragColor = vec4((ratio - 6.0)/1.5, 1.0, 0.0, 1.0);
+					}
 				}
 
-				/*
-				if (uv.x > -1.0 && uv.x < 1.0 && uv.y > -1.0 && uv.y < 1.0) {
-					gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-				} else {
-					gl_FragColor = vec4(hsv2rgb(vec3(float(iter)/100.0, 0.5, 0.5), 1.0);
-				}
-				*/
-				//gl_FragColor = vec4(color, 1.0, 1.0);
 			}
 
 		</script>

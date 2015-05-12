@@ -4,6 +4,11 @@
 
 export function main() {
 
+	const PANSPEED = 0.01;
+	const ZOOMSPEED = 0.05;
+
+	var zoom = 1.0;
+
 	function throttle(callback, delay) {
 		var timerId;
 		return function() {
@@ -24,8 +29,6 @@ export function main() {
 	var scene = new THREE.Scene();
 	var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
 	camera.position.z = 20;
-
-	var renderer = new THREE.WebGLRenderer({canvas: canvas});
 
 	//document.body.appendChild(renderer.domElement);
 
@@ -65,9 +68,11 @@ export function main() {
 		y2: 1
 	};
 
+	var center = {x:0, y:0};
+
 	var viewUniform = {
 		type: 'm4',
-		value: getViewMatrix(canvas, area)
+		value: null
 	};
 
 
@@ -87,26 +92,70 @@ export function main() {
 	var plane = new THREE.Mesh(geometry, material);
 	scene.add(plane);
 
+	var renderer = new THREE.WebGLRenderer({
+		canvas: canvas
+	});
+
+	renderer.setPixelRatio(window.devicePixelRatio);
+
+	var oldw = canvas.clientWidth; //window.innerWidth;//
+	var oldh = canvas.clientHeight; //window.innerHeight;
+
+	renderer.setSize(Math.floor(oldw), Math.floor(oldh), false);
+	canvas.width = renderer.context.drawingBufferWidth;
+	canvas.height = renderer.context.drawingBufferHeight;
+
 	function render() {
-		console.log("Render");
+		//console.log("Render");
 
 		//requestAnimationFrame(render);
 		//
 		// renderer.setPixelRatio(window.devicePixelRatio);
 		// renderer.setSize(window.innerWidth, window.innerHeight, false);
 
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+		//renderer.forceContextLoss();
 
-		viewUniform.value = getViewMatrix(canvas, area);
+		//renderer = new THREE.WebGLRenderer({canvas: canvas});
+
+
+
+		//viewUniform.value = getViewMatrix(canvas, area);
+
+		//material.needsUpdate = true;
 
 		//
 		//	cube.rotation.x += 0.005;
 		//	cube.rotation.y += 0.001;
 
+
+		//requestAnimationFrame(function() {
+		renderer.setPixelRatio(window.devicePixelRatio);
+
+		var oldw = canvas.clientWidth; //window.innerWidth;//
+		var oldh = canvas.clientHeight; //window.innerHeight;
+
+		renderer.setSize(Math.floor(oldw), Math.floor(oldh), false);
+
+		canvas.width = renderer.context.drawingBufferWidth;
+		canvas.height = renderer.context.drawingBufferHeight;
+
+		//canvas.scale(1);
+
+		// canvas.width = oldw;
+		// canvas.height = oldh;
+
+		viewUniform.value = getViewMatrix({
+			width: renderer.context.drawingBufferWidth,
+			height: renderer.context.drawingBufferHeight
+		}, area);
+
 		renderer.render(scene, camera);
+		//});
+
 	}
-	render();
+
+	requestAnimationFrame(render);
+	//requestAnimationFrame(render);
 
 	// aspect
 	// view = {x,y,w,h}
@@ -127,18 +176,24 @@ export function main() {
 
 	function getViewMatrix(canvas, view) {
 
-		var translateIt = translate(-canvas.width / 2, -canvas.height / 2);
+		var width2 = canvas.width / 2;
+
+		var height2 = canvas.height / 2;
+
+		var translateIt = translate(-width2, -height2);
 		var scaleIt = getScale(canvas, view);
 
-		var offsetX = view.x1 + (view.x2 - view.x1) / 2;
+		var offsetX = view.x1 + (view.x2 - view.x1) / 2 + center.x;
 
-		var offsetY = view.y1 + (view.y2 - view.y1) / 2;
+		var offsetY = view.y1 + (view.y2 - view.y1) / 2 + center.y;
 
 		var shiftIt = translate(offsetX, offsetY);
 
+		var zoomIt = getZoom(zoom);
+
 		//var final = shiftIt.multiply(scaleIt).multiply(translateIt);
 
-		var final = shiftIt.multiply(scaleIt).multiply(translateIt);
+		var final = shiftIt.multiply(zoomIt).multiply(scaleIt).multiply(translateIt);
 
 		return final;
 
@@ -171,5 +226,56 @@ export function main() {
 
 		return new THREE.Matrix4().makeScale(scale, scale, 1);
 	}
+
+	function getZoom(zoom) {
+		//zoom = 1 + Math.log(zoom);
+		return new THREE.Matrix4().makeScale(zoom, zoom, 1);
+	}
+
+
+	(function() {
+		var throttle = function(type, name, obj) {
+			obj = obj || window;
+			var running = false;
+			var func = function(event) {
+				if (running) {
+					return;
+				}
+				running = true;
+				requestAnimationFrame(function() {
+					obj.dispatchEvent(new CustomEvent(name, {detail:event}));
+					running = false;
+				});
+			};
+			obj.addEventListener(type, func);
+		};
+
+		/* init - you can init any event */
+		throttle("wheel", "optimizedScroll");
+	})();
+
+	// handle event
+	window.addEventListener("optimizedScroll", function(event) {
+
+		var wheel = event.detail;
+
+		if (!wheel.metaKey) { // PAN
+
+			var deltaX = wheel.deltaX;
+			var deltaY = wheel.deltaY;
+
+			center.x += deltaX * PANSPEED * zoom;
+			center.y -= deltaY * PANSPEED * zoom;
+
+		} else { // ZOOM
+			if (wheel.deltaY > 0)
+				zoom *= (1 + ZOOMSPEED);
+			else
+				zoom *= (1 - ZOOMSPEED);
+		}
+
+		requestAnimationFrame(render);
+
+	});
 
 }
