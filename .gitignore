@@ -5,7 +5,8 @@ bower_components/
 build/
 dist/
 lib/
-
+typings/
+.idea/
 .DS_Store
 **/.DS_Store
 
