@@ -349,8 +349,8 @@ export function main() {
             var deltaX = wheel.deltaX;
             var deltaY = wheel.deltaY;
 
-            center.x += deltaX * zoom;
-            center.y -= deltaY * zoom;
+            center.x += deltaX * zoom * 3;
+            center.y -= deltaY * zoom * 3;
 
         } else { // ZOOM
             if (wheel.deltaY > 0)
